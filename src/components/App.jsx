@@ -8,19 +8,19 @@ const initialStories = [
         title: "React is cool",
         url: "https://reactjs.org",
         released: 2013,
-        objId: 0,
+        objectID: 0,
     },
     {
         title: "Django is just django",
         url: "https://djangoproject.com",
         released: 2005,
-        objId: 1,
+        objectID: 1,
     },
     {
         title: "Google is best",
         url: "https://www.google.com",
         released: 1997,
-        objId: 2,
+        objectID: 2,
     },
 ];
 
@@ -51,7 +51,7 @@ const storiesReducer = (state, action) => {
         case "REMOVE_STORIES":
             return {
                 ...state,
-                data: state.data.filter(story => action.payload.objId !== story.objId)
+                data: state.data.filter(story => action.payload.objectID !== story.objectID)
             };
 
         case "STORIES_FETCH_INIT":
@@ -91,7 +91,7 @@ function App() {
     }, []);
 
     const handleRemoveStory = item => {
-        // const newStories = stories.filter(story => item.objId !== story.objId);
+        // const newStories = stories.filter(story => item.objectID !== story.objectID);
         dispatchStories({
             type: "REMOVE_STORIES",
             payload: item
