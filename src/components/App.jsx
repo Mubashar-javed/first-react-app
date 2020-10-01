@@ -4,6 +4,8 @@ import Example from "./Example";
 import List from './List'
 import axios from "axios";
 import SearchForm from "./SearchForm";
+import styles from "./App.module.css";
+
 
 const API_ENDPOINT = "http://hn.algolia.com/api/v1/search?query="
 
@@ -104,7 +106,7 @@ function App() {
                 onSearchInput={handleSearchInput}
                 onSearchSubmit={handleSearchSubmit}
             />
-            <h2>My List</h2>
+            <h2 className={styles.headlinePrimary}>My List</h2>
             {stories.isError && <p>Something went wrong......</p>}
             {stories.isLoading ? loadingSpinner :
                 <List list={stories.data} onRemoveItem={handleRemoveStory}/>
