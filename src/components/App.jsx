@@ -136,10 +136,7 @@ function App() {
 
 // This component will just render an Input with a label
 const InputWithLabel = ({id, children, onInputChange, value, type = 'text', isFocused = false}) => {
-
-
     const inputRef = React.useRef();
-
 
     React.useEffect(() => {
             if (isFocused && inputRef.current) {
