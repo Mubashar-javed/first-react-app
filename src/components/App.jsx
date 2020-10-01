@@ -3,34 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Example from "./Example";
 import List from './List'
 
-const initialStories = [
-    {
-        title: "React is cool",
-        url: "https://reactjs.org",
-        released: 2013,
-        objId: 0,
-    },
-    {
-        title: "Django is just django",
-        url: "https://djangoproject.com",
-        released: 2005,
-        objId: 1,
-    },
-    {
-        title: "Google is best",
-        url: "https://www.google.com",
-        released: 1997,
-        objId: 2,
-    },
-];
 
 const API_ENDPOINT = "http://hn.algolia.com/api/v1/search?query="
-const getAsyncStories = () => {
-    // delaying for 2 secs for demo purpose
-    return new Promise((resolve, reject) =>
-        resolve({data: {stories: initialStories}}),
-    );
-};
+
 
 // we use `use` prefix to define custom hooks in react, its a coding convention.
 const useSemiPersistentState = (key, initialValue = '') => {
@@ -50,7 +25,7 @@ const storiesReducer = (state, action) => {
         case "REMOVE_STORIES":
             return {
                 ...state,
-                data: state.filter(story => action.payload.objId !== story.objId)
+                data: state.data.filter(story => action.payload.objectID !== story.objectID)
             };
 
         case "STORIES_FETCH_INIT":

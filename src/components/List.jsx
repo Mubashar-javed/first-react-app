@@ -3,7 +3,7 @@ import React from 'react';
 
 const List = ({list, onRemoveItem}) => {
     return list.map(item => {
-            return <Item key={item.objId} item={item} onRemoveItem={onRemoveItem}/>;
+            return <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>;
         }
     );
 };
