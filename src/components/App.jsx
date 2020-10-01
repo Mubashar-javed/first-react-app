@@ -3,8 +3,35 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Example from "./Example";
 import List from './List'
 
+const initialStories = [
+    {
+        title: "React is cool",
+        url: "https://reactjs.org",
+        released: 2013,
+        objId: 0,
+    },
+    {
+        title: "Django is just django",
+        url: "https://djangoproject.com",
+        released: 2005,
+        objId: 1,
+    },
+    {
+        title: "Google is best",
+        url: "https://www.google.com",
+        released: 1997,
+        objId: 2,
+    },
+];
 
-const API_ENDPOINT = "http://hn.algolia.com/api/v1/search?query="
+const getAsyncStories = () => {
+    // delaying for 2 secs for demo purpose
+    return new Promise(resolve =>
+        setTimeout(() =>
+                resolve({data: {stories: initialStories}}),
+            2000)
+    );
+};
 
 // we use `use` prefix to define custom hooks in react, its a coding convention.
 const useSemiPersistentState = (key, initialValue = '') => {
@@ -21,49 +48,37 @@ const useSemiPersistentState = (key, initialValue = '') => {
 
 const storiesReducer = (state, action) => {
     switch (action.type) {
+        case "SET_STORIES":
+            return action.payload;
         case "REMOVE_STORIES":
-            return {
-                ...state,
-                data: state.filter(story => action.payload.objId !== story.objId)
-            };
-
-        case "STORIES_FETCH_INIT":
-            return {...state, isLoading: true, isError: false};
-
-        case "STORIES_FETCH_SUCCESS":
-            return {
-                ...state, isLoading: false, isError: false, data: action.payload
-            };
-
-        case "STORIES_FETCH_FAILURE":
-            return {...state, isError: true, isLoading: false,};
-
+            return state.filter(story => action.payload.objId !== story.objId);
         default:
             throw  new Error();
     }
+
 }
 
 function App() {
+
 
     const [searchTerm, setSearchTerm] = useSemiPersistentState("search");
 
     //it mean initial value of stories=[]
     // const [stories, setStories] = React.useState([]);
-    const [stories, dispatchStories] = React.useReducer(
-        storiesReducer,
-        {data: [], isLoading: false, isError: false}
-    );
+    const [stories, dispatchStories] = React.useReducer(storiesReducer, []);
+
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isError, setIsError] = React.useState(false);
 
     React.useEffect(() => {
-        dispatchStories({type: "STORIES_FETCH_INIT"})
-        fetch(`${API_ENDPOINT}react`)
-            .then(result => result.json())
-            .then(result => {
-                dispatchStories({
-                    type: "STORIES_FETCH_SUCCESS",
-                    payload: result.hits
-                });
-            }).catch(() => dispatchStories({type: "STORIES_FETCH_FAILURE"}))
+        setIsLoading(true);
+        getAsyncStories().then(result => {
+            dispatchStories({
+                type: "SET_STORIES",
+                payload: result.data.stories
+            });
+            setIsLoading(false);
+        }).catch(() => setIsError(true))
     }, []);
 
     const handleRemoveStory = item => {
@@ -78,10 +93,11 @@ function App() {
         setSearchTerm(event.target.value);
     };
 
-    const searchedStories = stories.data.filter(story => {
-        return story.title.includes(searchTerm.toLowerCase());
+    const searchedStories = stories.filter(story => {
+        const {title} = story;
+        const term = searchTerm.toLowerCase();
+        return title.includes(term);
     });
-
     const loadingSpinner = <div className="text-center">
         <div className="spinner-border text-primary" role="status">
             <span className="sr-only">Loading...</span>
@@ -99,8 +115,8 @@ function App() {
             </InputWithLabel>
 
             <h2>My List</h2>
-            {stories.isError && <p>Something went wrong......</p>}
-            {stories.isLoading ? loadingSpinner :
+            {isError && <p>Something went wrong......</p>}
+            {isLoading ? loadingSpinner :
                 <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
             }
             <hr/>
