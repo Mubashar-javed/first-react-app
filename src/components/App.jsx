@@ -15,6 +15,7 @@ const useSemiPersistentState = (key, initialValue = '') => {
         localStorage.getItem(key) || initialValue
     );
     React.useEffect(() => {
+            console.log("useEffect called from useSemiPersistentState")
             localStorage.setItem(key, value);
         }, [value, key] // only re-run if the value or key changed
     );
