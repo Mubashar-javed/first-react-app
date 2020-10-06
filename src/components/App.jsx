@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect, useReducer, useRef} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Example from "./Example";
 import List from './List'
@@ -35,11 +35,19 @@ const getAsyncStories = () => {
 
 // we use `use` prefix to define custom hooks in react, its a coding convention.
 const useSemiPersistentState = (key, initialValue = '') => {
-    const [value, setValue] = React.useState(
+    const isMounted = useRef(false);
+
+    const [value, setValue] = useState(
         localStorage.getItem(key) || initialValue
     );
-    React.useEffect(() => {
-            localStorage.setItem(key, value);
+    useEffect(() => {
+            if (isMounted.current === false) {
+                // this block will run when we render our component for the first time
+                isMounted.current = true
+                // after till its life-cycle its else block will run
+            } else {
+                localStorage.setItem(key, value)
+            }
         }, [value, key] // only re-run if the value or key changed
     );
     // its a React convention to return an array for custom hooks
@@ -75,11 +83,11 @@ function App() {
 
     //it mean initial value of stories=[]
     // const [stories, setStories] = React.useState([]);
-    const [stories, dispatchStories] = React.useReducer(storiesReducer,
+    const [stories, dispatchStories] = useReducer(storiesReducer,
         {data: [], isLoading: false, isError: false});
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         dispatchStories({type: "STORIES_FETCH_INIT"});
 
         getAsyncStories().then(result => {
@@ -112,6 +120,7 @@ function App() {
             <span className="sr-only">Loading...</span>
         </div>
     </div>
+    console.log("A:App()")
     return (
         <>
             <InputWithLabel
@@ -136,9 +145,9 @@ function App() {
 
 // This component will just render an Input with a label
 const InputWithLabel = ({id, children, onInputChange, value, type = 'text', isFocused = false}) => {
-    const inputRef = React.useRef();
+    const inputRef = useRef();
 
-    React.useEffect(() => {
+    useEffect(() => {
             if (isFocused && inputRef.current) {
                 inputRef.current.focus();
             }

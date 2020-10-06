@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 
 const Example = () => {
-    const [count, changeCount] = React.useState(0);
+    const [count, changeCount] = useState(0);
 
     return (
         <>

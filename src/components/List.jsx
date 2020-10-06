@@ -1,12 +1,15 @@
 import React from 'react';
 
 
-const List = ({list, onRemoveItem}) => {
-    return list.map(item => {
-            return <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>;
-        }
-    );
-};
+const List = React.memo(({list, onRemoveItem}) => {
+        return console.log("A:List()") ||
+            list.map(item => <Item
+                key={item.objectID}
+                item={item}
+                onRemoveItem={onRemoveItem}/>
+            )
+    }
+)
 
 const Item = ({item, onRemoveItem}) => {
     return (
